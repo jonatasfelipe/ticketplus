@@ -1,4 +1,5 @@
 <?php
+
 class ParticipanteModel {
     private $pdo;
     public function __construct(PDO $pdo){
@@ -34,6 +35,12 @@ class ParticipanteModel {
         $sql = "DELETE FROM participantes WHERE id = ?";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+     public function verificarInscricao($id_participante, $id_evento){
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as inscricoes FROM participanteporevento WHERE id_participante = ? AND id_evento = ?");
+        $stmt->execute([$id_participante, $id_evento]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function fazerInscricao($id_participante, $id_evento) {

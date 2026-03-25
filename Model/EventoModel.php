@@ -38,5 +38,11 @@ class EventoModel {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$id]);
     }
+
+    public function verificarDisponibilidade($id_evento){
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as jainscritos FROM participanteporevento WHERE id_evento = ?");
+        $stmt->execute([$id_evento]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
 }

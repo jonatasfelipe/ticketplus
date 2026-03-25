@@ -1,14 +1,16 @@
 <?php
 session_start();
+require_once "C:/xampp/htdocs/ticketplus/Model/EventoModel.php";
 require_once "C:/xampp/htdocs/ticketplus/Model/ParticipanteModel.php";
 class ParticipanteController
 {
     private $participanteModel;
+    private $eventoModel;
 
     public function __construct($pdo)
     {
+        $this->eventoModel = new EventoModel($pdo);
         $this->participanteModel = new ParticipanteModel($pdo);
-
     }
     public function listar()
     {
@@ -40,9 +42,30 @@ class ParticipanteController
         return $participante;
     }
 
+    public function verificarInscricao($id_participante, $id_evento)
+    {
+        $verificainscricao = $this->participanteModel->verificarInscricao($id_participante, $id_evento);
+        return $verificainscricao;
+    }
+
     public function fazerInscricao($id_participante, $id_evento)
     {
-        $this->participanteModel->fazerInscricao($id_participante, $id_evento);
+        $inscrito = $this->verificarInscricao($id_participante, $id_evento);
+
+        $vagas = $this->eventoModel->buscarEvento($id_evento);
+        //var_dump($vagas['numeromaxparticipantes']);
+
+        $jainscritos = $this->eventoModel->verificarDisponibilidade($id_evento);
+
+        if ($inscrito['inscricoes'] > 0) {
+            return $mensagem = "Você já está inscrito!";
+        } elseif ($jainscritos['jainscritos'] >= $vagas['numeromaxparticipantes']) {
+            return $mensagem = "Evento Lotado!";
+        } else {
+
+            $this->participanteModel->fazerInscricao($id_participante, $id_evento);
+            return $mensagem = "Inscrição Realizada com sucesso!";
+        }
     }
 
     public function fazerLogin($email)

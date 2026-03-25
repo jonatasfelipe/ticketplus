@@ -14,8 +14,9 @@ $ParticipanteController = new ParticipanteController($pdo);
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $id_evento = $_POST['id_evento'];
 
-    $ParticipanteController->fazerInscricao($participantelogado, $id_evento);
-    header('Location: index.php');
+    $validaInscricao = $ParticipanteController->fazerInscricao($participantelogado, $id_evento);
+    echo "<h1> $validaInscricao </h1>";
+    //header('Location: index.php');
 }
 
 
