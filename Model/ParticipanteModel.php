@@ -32,9 +32,31 @@ class ParticipanteModel {
     }
 
     public function deletar($id) {
-        $sql = "DELETE FROM participantes WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$id]);
+        try {
+            $sql = "DELETE FROM participantes WHERE id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id]);
+    
+            return [
+                "success" => true,
+                "message" => "Participante deletado com sucesso."
+            ];
+    
+        } catch (PDOException $e) {
+    
+            // Código 23000 = erro de integridade (FK, etc)
+            if ($e->getCode() == '23000') {
+                return [
+                    "success" => false,
+                    "message" => "Não é possível excluir este participante pois ele está vinculado a outros registros."
+                ];
+            }
+    
+            return [
+                "success" => false,
+                "message" => "Erro ao deletar participante."
+            ];
+        }
     }
 
      public function verificarInscricao($id_participante, $id_evento){

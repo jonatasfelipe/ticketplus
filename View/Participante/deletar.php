@@ -8,8 +8,22 @@ $ParticipanteController = new ParticipanteController($pdo);
 if(isset($_GET['id'])){
     $id = $_GET['id'];
     $participante = $ParticipanteController->deletar($id);
-    header('Location: ../../index.php');
+
+    if($participante['success'] == false){
+        echo "<script>
+        alert('{$participante['message']}');
+        window.location = '../../index.php';
+        </script>";
+    } else {
+        echo "<script>
+        alert('{$participante['message']}');
+        window.location = '../../index.php';
+        </script>";
+    }
+    
 } else {
-    header('Location: ../../index.php');
+    echo "<script>
+    window.location = '../../index.php';
+    </script>";
 }
 ?>
